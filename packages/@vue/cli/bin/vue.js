@@ -39,6 +39,7 @@ program
   .option('-p, --preset <presetName>', 'Skip prompts and use saved or remote preset')
   .option('-d, --default', 'Skip prompts and use default preset')
   .option('-i, --inlinePreset <json>', 'Skip prompts and use inline JSON string as preset')
+  .option('-g, --initialCommit <message>', 'Specify initial commit message (when git is available)')
   .option('-m, --packageManager <command>', 'Use specified npm client when installing dependencies')
   .option('-r, --registry <url>', 'Use specified npm registry when installing dependencies (only for npm)')
   .option('-f, --force', 'Overwrite target directory if it exists')
@@ -66,9 +67,10 @@ program
 program
   .command('inspect [paths...]')
   .option('--mode <mode>')
+  .option('-v --verbose', 'Show full function definitions in output')
   .description('inspect the webpack config in a project with vue-cli-service')
   .action((paths, cmd) => {
-    require('../lib/inspect')(paths, cmd.mode)
+    require('../lib/inspect')(paths, cleanArgs(cmd))
   })
 
 program
@@ -92,6 +94,7 @@ program
 program
   .command('init <template> <app-name>')
   .description('generate a project from a remote template (legacy API, requires @vue/cli-init)')
+  .option('-c, --clone', 'Use git clone when fetching remote template')
   .action(() => {
     loadCommand('init', '@vue/cli-init')
   })
