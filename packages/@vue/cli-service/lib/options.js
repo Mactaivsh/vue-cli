@@ -4,19 +4,16 @@ const schema = createSchema(joi => joi.object({
   baseUrl: joi.string(),
   outputDir: joi.string(),
   compiler: joi.boolean(),
+  transpileDependencies: joi.array(),
+  preserveWhitespace: joi.boolean(),
   productionSourceMap: joi.boolean(),
-  vueLoader: joi.object(),
   parallel: joi.boolean(),
   devServer: joi.object(),
-  dll: joi.alternatives().try(
-    joi.boolean(),
-    joi.array().items(joi.string())
-  ),
 
   // css
   css: joi.object({
     modules: joi.boolean(),
-    extract: joi.boolean(),
+    extract: joi.alternatives().try(joi.boolean(), joi.object()),
     localIdentName: joi.string(),
     sourceMap: joi.boolean(),
     loaderOptions: joi.object({
@@ -55,14 +52,11 @@ exports.defaults = () => ({
   // boolean, use full build?
   compiler: false,
 
-  // vue-loader options
-  vueLoader: {
-    preserveWhitespace: false,
-    template: {
-      // for pug
-      doctype: 'html'
-    }
-  },
+  // deps to transpile
+  transpileDependencies: [/* string or regex */],
+
+  // whether to preserve whitespaces between elements
+  preserveWhitespace: false,
 
   // sourceMap for production build?
   productionSourceMap: true,
@@ -70,10 +64,6 @@ exports.defaults = () => ({
   // use thread-loader for babel & TS in production build
   // enabled by default if the machine has more than 1 cores
   parallel: require('os').cpus().length > 1,
-
-  // split vendors using autoDLLPlugin?
-  // can be an explicit list of dependencies to include in the DLL chunk.
-  dll: false,
 
   css: {
     // extract: true,
